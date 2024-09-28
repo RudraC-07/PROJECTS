@@ -13,6 +13,12 @@ function MemberList() {
       .catch((error) => console.error("Error fetching members:", error));
   }, []);
 
+  const sty = {
+    backgroundColor: "#000", // Set background color to black
+    color: "#fff", // Optional: Set text color to white for better contrast
+    minHeight: "100vh", // Make sure the background covers the full height
+  };
+
   const handleView = (_id) => {
     navigate(`/member/${_id}`); // Change to the appropriate route
   };
@@ -46,7 +52,8 @@ function MemberList() {
   }
 
   return (
-    <div className="container">
+    <div className="container-fluid" style={sty}>
+      <div className="container">
       <div className="row mx-3">
         {length === 0 ? (
           <div style={{height:"80vh"}} className="d-flex align-items-center justify-content-center">
@@ -97,6 +104,7 @@ function MemberList() {
           ))
         )}
       </div>
+    </div>
     </div>
   );
 }

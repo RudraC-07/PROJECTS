@@ -13,6 +13,12 @@ function AddMember() {
     MembershipType: "",
   });
 
+  const sty = {
+    backgroundColor: "#000", // Set background color to black
+    color: "#fff", // Optional: Set text color to white for better contrast
+    minHeight: "100vh", // Make sure the background covers the full height
+  };
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -35,7 +41,8 @@ function AddMember() {
   };
 
   return (
-    <div className="container">
+    <div className="container-fluid" style={sty}>
+      <div className="container">
       <h1 className="text-center mb-5">Gym Membership</h1>
       <div className="card">
         <div className="card-header text-center">
@@ -164,6 +171,9 @@ function AddMember() {
         </div>
       </div>
     </div>
+
+    </div>
+    
   );
 }
 

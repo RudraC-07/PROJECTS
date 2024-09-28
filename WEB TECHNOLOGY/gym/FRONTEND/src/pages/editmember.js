@@ -11,6 +11,11 @@ function EditMember() {
     DOB: "",
     MembershipType: "",
   });
+  const sty = {
+    backgroundColor: "#000", // Set background color to black
+    color: "#fff", // Optional: Set text color to white for better contrast
+    minHeight: "100vh", // Make sure the background covers the full height
+  };
   const { id } = useParams();
   const navigate = useNavigate();
   // console.log(id);
@@ -55,7 +60,8 @@ function EditMember() {
   }
 
   return (
-    <div className="container">
+    <div className="container-fluid" style={sty}>
+      <div className="container">
       <h1 className="text-center mb-5">Gym Membership</h1>
       <div className="card">
         <div className="card-header text-center">
@@ -192,6 +198,7 @@ function EditMember() {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }

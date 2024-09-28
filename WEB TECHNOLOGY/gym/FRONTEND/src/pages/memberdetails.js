@@ -8,6 +8,16 @@ function MemberDetails() {
     width : "310px",
     height : "200px"
   }
+  const sty1 = {
+    backgroundColor: "#000",    backgroundSize: "cover", // Cover the entire area
+    backgroundPosition: "center", // Center the image
+    height: "100vh", // Full viewport height
+    color: "white", // Text color for visibility
+    display: "flex", // Flexbox layout
+    // alignItems: "center", // Vertically center
+    justifyContent: "center", // Horizontally center
+    // textAlign: "center" // Center text
+  };
 
   useEffect(() => {
     fetch("http://localhost:4000/members/" + id)
@@ -17,7 +27,8 @@ function MemberDetails() {
 
   console.log(member);
   return (
-    <div className="container">
+    <div className="container-fluid" style={sty1}>
+      <div className="container mt-3">
       <div class="card mb-3">
         <div class="row g-0">
           <div class="col-md-4">
@@ -40,6 +51,8 @@ function MemberDetails() {
         </div>
       </div>
     </div>
+    </div>
+    
   );
 }
 
