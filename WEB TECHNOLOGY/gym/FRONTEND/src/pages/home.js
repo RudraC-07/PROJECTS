@@ -1,5 +1,4 @@
-// 
-
+//
 
 function Home() {
   const sty = {
@@ -11,20 +10,24 @@ function Home() {
     display: "flex", // Flexbox layout
     // alignItems: "center", // Vertically center
     justifyContent: "center", // Horizontally center
-    textAlign: "center" // Center text
+    textAlign: "center", // Center text
   };
 
   return (
     <>
       <div className="container-fluid" style={sty}>
-        <div><h1>XYZ GYM</h1></div>
+        <div className="row w-100">
+          <h1 className="col-12 d-flex justify-content-center align-items-center display-3">XYZ GYM</h1>
+          <div className="col-12 d-flex justify-content-between align-items-end">
+            <div className="col"> <span className="fs-1">Address</span>  <br/> Rudra</div>
+            <div className="col"> <span className="fs-1">Membership</span> </div>
+            <div className="col"> <span className="fs-1">Contact</span> </div>
+          </div>
+        </div>
+      </div>
+      {/* <div class="row d-flex justify-content-between" style={sty}>
         
-      </div>
-      <div class="row d-flex justify-content-between" style={sty}>
-        <div className="col">Address</div>
-        <div className="col">Membership</div>
-        <div className="col">Contact</div>
-      </div>
+      </div> */}
     </>
   );
 }
