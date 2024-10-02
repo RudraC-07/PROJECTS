@@ -32,8 +32,9 @@ function Home() {
           </div>
           <div className="col-12 d-flex justify-content-start align-items-start mx-5">
             <div className="col mx-3"> 
-              <span className="fs-3"><i><b>Contact</b></i></span> <br/> 
-              1122334455
+              <span className="fs-3"><i><b>Contact Us</b></i></span> <br/> 
+              ABC: 1122334455<br/>
+              XYZ: 3344556677
             </div>
           </div>
         </div>
