@@ -10,11 +10,6 @@ function Layout(){
             <img src="./images/gym2.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top mx-2" />
             XYZ Gym
           </Link>
-
-        {/* <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button> */}
-
           <div class="d-flex justify-content-end pt-4" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
@@ -29,14 +24,6 @@ function Layout(){
               <li class="nav-item">
                 <Link to="/addmember" className='nav-link pt-2'>Add member</Link> &nbsp;
               </li>
-
-              {/* <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-              </li> */}
-
             </ul>
           </div>
         </div>

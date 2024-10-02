@@ -9,14 +9,14 @@ function MemberDetails() {
     height : "200px"
   }
   const sty1 = {
-    backgroundColor: "#000",    backgroundSize: "cover", // Cover the entire area
-    backgroundPosition: "center", // Center the image
-    height: "100vh", // Full viewport height
-    color: "white", // Text color for visibility
-    display: "flex", // Flexbox layout
-    // alignItems: "center", // Vertically center
-    justifyContent: "center", // Horizontally center
-    // textAlign: "center" // Center text
+    backgroundImage: "url('https://t3.ftcdn.net/jpg/01/19/59/74/360_F_119597487_SnvLBdheEGOxu05rMQ5tCzo250cRrTz9.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    minHeight: "100vh",
+    height: "auto",
+    color: "white",
+    display: "flex",
+    justifyContent: "center",
   };
 
   useEffect(() => {

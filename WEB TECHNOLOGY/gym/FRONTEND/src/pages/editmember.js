@@ -12,22 +12,25 @@ function EditMember() {
     MembershipType: "",
   });
   const sty = {
-    backgroundColor: "#000", // Set background color to black
-    color: "#fff", // Optional: Set text color to white for better contrast
-    minHeight: "100vh", // Make sure the background covers the full height
+    backgroundImage: "url('https://t3.ftcdn.net/jpg/01/19/59/74/360_F_119597487_SnvLBdheEGOxu05rMQ5tCzo250cRrTz9.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    height: "auto",
+    color: "white",
+    display: "flex",
+    justifyContent: "center",
   };
   const { id } = useParams();
   const navigate = useNavigate();
   // console.log(id);
 
   useEffect(() => {
-    // Fetch existing member data based on memberId
     const fetchMemberData = async () => {
       const response = await fetch(`http://localhost:4000/members/${id}`);
       const data = await response.json();
       if (data.DOB) {
         const date = new Date(data.DOB);
-        const formattedDOB = date.toISOString().split("T")[0]; // Converts to YYYY-MM-DD
+        const formattedDOB = date.toISOString().split("T")[0];
         data.DOB = formattedDOB;
       }
       console.log(data);

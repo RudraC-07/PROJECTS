@@ -14,17 +14,21 @@ function MemberList() {
   }, []);
 
   const sty = {
-    backgroundColor: "#000", // Set background color to black
-    color: "#fff", // Optional: Set text color to white for better contrast
-    minHeight: "100vh", // Make sure the background covers the full height
+    backgroundImage: "url('https://t3.ftcdn.net/jpg/01/19/59/74/360_F_119597487_SnvLBdheEGOxu05rMQ5tCzo250cRrTz9.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    height: "auto",
+    color: "white",
+    display: "flex",
+    justifyContent: "center",
   };
 
   const handleView = (_id) => {
-    navigate(`/member/${_id}`); // Change to the appropriate route
+    navigate(`/member/${_id}`);
   };
 
   const handleEdit = (_id) => {
-    navigate(`/editmember/${_id}`); // Change to the appropriate route
+    navigate(`/editmember/${_id}`);
   };
 
   function handleDelete(_id) {
@@ -34,18 +38,11 @@ function MemberList() {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        // Include any necessary authorization headers here
       },
     })
       .then((res) => {
-        // Check if the response is okay
         window.location.reload();
-        // return res.json(); // or handle response if needed
       })
-      // .then((data) => {
-      //   console.log(`Successfully deleted member with ID: ${_id}`);
-      //   window.location.reload(); // Refresh the page
-      // })
       .catch((error) => {
         console.error("Error:", error);
       });
@@ -64,7 +61,7 @@ function MemberList() {
             <div className="col-md-4 mb-4" key={m._id}>
               <div className="card m-3 p-2" style={{ width: "18rem" }}>
                 <img
-                  src={"https://img.freepik.com/premium-photo/indoor-space-gym-ai-technology-generated-image_1112-12533.jpg" || "placeholder-image-url"} // Replace with your placeholder image URL
+                  src={"https://img.freepik.com/premium-photo/indoor-space-gym-ai-technology-generated-image_1112-12533.jpg" || "placeholder-image-url"}
                   className="card-img-top rounded float-start"
                   alt={`${m.Firstname} ${m.Lastname}`}
                 />

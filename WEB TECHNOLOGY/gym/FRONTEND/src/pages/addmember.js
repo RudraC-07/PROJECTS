@@ -14,9 +14,13 @@ function AddMember() {
   });
 
   const sty = {
-    backgroundColor: "#000", // Set background color to black
-    color: "#fff", // Optional: Set text color to white for better contrast
-    minHeight: "100vh", // Make sure the background covers the full height
+    backgroundImage: "url('https://t3.ftcdn.net/jpg/01/19/59/74/360_F_119597487_SnvLBdheEGOxu05rMQ5tCzo250cRrTz9.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    height: "auto",
+    color: "white",
+    display: "flex",
+    justifyContent: "center",
   };
 
   const navigate = useNavigate();
@@ -35,9 +39,6 @@ function AddMember() {
       },
       body: JSON.stringify(formData),
     }).then(res => navigate("/memberlist"))
-
-    
-    // navi;
   };
 
   return (
