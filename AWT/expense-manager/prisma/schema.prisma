@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model peoples {
+  peopleid    Int      @id @default(autoincrement())
+  peoplecode  String?  @db.VarChar(50)
+  password    String   @db.VarChar(50)
+  peoplename  String   @db.VarChar(250)
+  email       String   @db.VarChar(150)
+  mobileno    String   @db.VarChar(50)
+  description String?  @db.VarChar(500)
+  userid      Int
+  created     DateTime @db.Timestamp(6)
+  modified    DateTime @db.Timestamp(6)
+  isactive    Boolean?
+}
