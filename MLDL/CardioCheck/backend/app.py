@@ -7,9 +7,16 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Cardio Disease Prediction API")
 
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://cardio--check.vercel.app",
+    "*", 
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
