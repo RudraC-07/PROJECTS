@@ -22,7 +22,7 @@ export default function ModelInfoPage() {
             <Sliders className="text-primary" />
             Input Features
           </h2>
-          <div className="bg-muted/30 rounded-2xl p-8 border border-border">
+          <div className="bg-muted/10 rounded-2xl p-8 border border-border">
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
               <FeatureItem label="Age" desc="Objective Feature (int)" />
               <FeatureItem label="Gender" desc="Objective Feature (categorical)" />
@@ -66,7 +66,7 @@ export default function ModelInfoPage() {
                 <Activity className="text-chart-1" />
                 Pipeline Architecture
             </h2>
-            <div className="bg-muted/30 rounded-2xl p-8 border border-border">
+            <div className="bg-muted/10 rounded-2xl p-8 border border-border">
                 <p className="text-muted-foreground leading-relaxed mb-6">
                     The model is implemented as a <strong>Scikit-Learn Pipeline</strong>, streamlining the workflow from raw data to prediction. This ensures that the exact same preprocessing steps applied during training are rigorously applied to new patient data.
                 </p>

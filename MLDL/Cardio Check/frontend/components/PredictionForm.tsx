@@ -185,7 +185,7 @@ export default function PredictionForm({ onResult }: { onResult: (result: any, f
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full text-lg h-14 bg-primary hover:bg-primary/90 text-primary-foreground transition-all font-bold shadow-lg shadow-primary/20 border-0 mt-8">
+          <Button type="submit" disabled={loading} suppressHydrationWarning className="w-full text-lg h-14 bg-primary hover:bg-primary/90 text-primary-foreground transition-all font-bold shadow-lg shadow-primary/20 border-0 mt-8">
             {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Processing Analysis...</> : <>Analyze Risk Profile <ArrowRight className="ml-2 h-5 w-5" /></>}
           </Button>
         </form>

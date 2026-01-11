@@ -5,9 +5,10 @@ import { Activity, BarChart2, Info, FileWarning, Menu, X, Heart, Moon, Sun } fro
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -80,14 +81,12 @@ export default function Navbar() {
               </Button>
             )}
 
-            <Link href="/assess">
-              <Button 
-                size="lg"
-                className="ml-2 px-6 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 border-0"
-              >
-                <Activity className="mr-2 h-4 w-4" />
-                Predict
-              </Button>
+            <Link 
+              href="/assess"
+              className={cn(buttonVariants({ size: "lg" }), "ml-2 px-6 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 border-0")}
+            >
+              <Activity className="mr-2 h-4 w-4" />
+              Predict
             </Link>
           </div>
 
@@ -128,14 +127,13 @@ export default function Navbar() {
                     ))}
                   </div>
 
-                  <Link href="/assess" onClick={() => setIsOpen(false)}>
-                    <Button 
-                      size="lg" 
-                      className="w-full rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
-                    >
-                      <Activity className="mr-2 h-4 w-4" />
-                      Predict
-                    </Button>
+                  <Link 
+                    href="/assess" 
+                    onClick={() => setIsOpen(false)}
+                    className={cn(buttonVariants({ size: "lg" }), "w-full rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20")}
+                  >
+                    <Activity className="mr-2 h-4 w-4" />
+                    Predict
                   </Link>
 
                    {/* Mobile Theme Toggle */}

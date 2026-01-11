@@ -42,7 +42,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-          <SmoothScroll />
+          {/* <SmoothScroll /> */}
           <Navbar />
           <main className="flex-grow">{children}</main>
           <Footer />

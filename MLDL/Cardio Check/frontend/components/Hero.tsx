@@ -43,7 +43,7 @@ export default function Hero() {
               </Link>
               <Link
                 href="/model-info"
-                className="inline-flex items-center justify-center gap-2 bg-card hover:bg-emerald-700/10 hover:text-emerald-700 text-card-foreground border border-input px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:border-sidebar-accent"
+                className="inline-flex items-center justify-center gap-2 bg-muted/10 dark:bg-card backdrop-blur-sm hover:bg-emerald-700/10 hover:text-emerald-700 text-foreground border border-input px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:border-sidebar-accent"
               >
                 Learn More
               </Link>
@@ -95,12 +95,15 @@ export default function Hero() {
 
 function Card({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
     return (
-        <div className="bg-card p-6 rounded-2xl border border-border shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-            <div className="mb-4 bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
-                {icon}
+        <div className="relative p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group bg-muted/10 dark:bg-card">
+            {/* Content */}
+            <div className="relative z-10">
+                <div className="mb-4 bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center">
+                    {icon}
+                </div>
+                <h3 className="font-bold text-foreground mb-2">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-snug">{desc}</p>
             </div>
-            <h3 className="font-bold text-foreground mb-2">{title}</h3>
-            <p className="text-sm text-muted-foreground leading-snug">{desc}</p>
         </div>
     )
 }
