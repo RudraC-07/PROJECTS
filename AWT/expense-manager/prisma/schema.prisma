@@ -20,3 +20,109 @@ model peoples {
   modified    DateTime @db.Timestamp(6)
   isactive    Boolean?
 }
+
+model categories {
+  categoryid     Int              @id @default(autoincrement())
+  categoryname   String           @db.VarChar(250)
+  logopath       String?          @db.VarChar(250)
+  isexpense      Boolean
+  isincome       Boolean
+  isactive       Boolean
+  description    String?          @db.VarChar(500)
+  userid         Int
+  created        DateTime         @default(now()) @db.Timestamp(6)
+  modified       DateTime         @default(now()) @db.Timestamp(6)
+  sequence       Decimal?         @db.Decimal
+  expenses       expenses[]
+  incomes        incomes[]
+  sub_categories sub_categories[]
+}
+
+model expenses {
+  expenseid      Int             @id @default(autoincrement())
+  expensedate    DateTime        @db.Timestamp(6)
+  categoryid     Int?
+  subcategoryid  Int?
+  peopleid       Int
+  projectid      Int?
+  amount         Decimal         @db.Decimal(12, 2)
+  expensedetail  String?         @db.VarChar(500)
+  attachmentpath String?         @db.VarChar(250)
+  description    String?         @db.VarChar(500)
+  userid         Int
+  created        DateTime        @default(now()) @db.Timestamp(6)
+  modified       DateTime        @default(now()) @db.Timestamp(6)
+  categories     categories?     @relation(fields: [categoryid], references: [categoryid], onDelete: NoAction, onUpdate: NoAction, map: "fk_expenses_category")
+  projects       projects?       @relation(fields: [projectid], references: [projectid], onDelete: NoAction, onUpdate: NoAction, map: "fk_expenses_project")
+  sub_categories sub_categories? @relation(fields: [subcategoryid], references: [subcategoryid], onDelete: NoAction, onUpdate: NoAction, map: "fk_expenses_subcategory")
+  users          users           @relation(fields: [userid], references: [userid], onDelete: NoAction, onUpdate: NoAction, map: "fk_expenses_user")
+}
+
+model incomes {
+  incomeid       Int             @id @default(autoincrement())
+  incomedate     DateTime        @db.Timestamp(6)
+  categoryid     Int?
+  subcategoryid  Int?
+  peopleid       Int
+  projectid      Int?
+  amount         Decimal         @db.Decimal(12, 2)
+  incomedetail   String?         @db.VarChar(500)
+  attachmentpath String?         @db.VarChar(250)
+  description    String?         @db.VarChar(500)
+  userid         Int
+  created        DateTime        @default(now()) @db.Timestamp(6)
+  modified       DateTime        @default(now()) @db.Timestamp(6)
+  categories     categories?     @relation(fields: [categoryid], references: [categoryid], onDelete: NoAction, onUpdate: NoAction, map: "fk_incomes_category")
+  projects       projects?       @relation(fields: [projectid], references: [projectid], onDelete: NoAction, onUpdate: NoAction, map: "fk_incomes_project")
+  sub_categories sub_categories? @relation(fields: [subcategoryid], references: [subcategoryid], onDelete: NoAction, onUpdate: NoAction, map: "fk_incomes_subcategory")
+  users          users           @relation(fields: [userid], references: [userid], onDelete: NoAction, onUpdate: NoAction, map: "fk_incomes_user")
+}
+
+model projects {
+  projectid        Int        @id @default(autoincrement())
+  projectname      String     @db.VarChar(250)
+  projectlogo      String?    @db.VarChar(250)
+  projectstartdate DateTime?  @db.Timestamp(6)
+  projectenddate   DateTime?  @db.Timestamp(6)
+  projectdetail    String?    @db.VarChar(500)
+  description      String?    @db.VarChar(500)
+  userid           Int
+  created          DateTime   @default(now()) @db.Timestamp(6)
+  modified         DateTime   @default(now()) @db.Timestamp(6)
+  isactive         Boolean?   @default(true)
+  expenses         expenses[]
+  incomes          incomes[]
+}
+
+model sub_categories {
+  subcategoryid   Int        @id @default(autoincrement())
+  categoryid      Int
+  subcategoryname String     @db.VarChar(250)
+  logopath        String?    @db.VarChar(250)
+  isexpense       Boolean
+  isincome        Boolean
+  isactive        Boolean    @default(true)
+  description     String?    @db.VarChar(500)
+  userid          Int
+  created         DateTime   @default(now()) @db.Timestamp(6)
+  modified        DateTime   @default(now()) @db.Timestamp(6)
+  sequence        Decimal?   @db.Decimal
+  expenses        expenses[]
+  incomes         incomes[]
+  categories      categories @relation(fields: [categoryid], references: [categoryid], onDelete: NoAction, onUpdate: NoAction, map: "fk_subcategories_category")
+  users           users      @relation(fields: [userid], references: [userid], onDelete: NoAction, onUpdate: NoAction, map: "fk_subcategories_user")
+}
+
+model users {
+  userid         Int              @id @default(autoincrement())
+  username       String           @db.VarChar(250)
+  emailaddress   String           @unique(map: "uq_users_email") @db.VarChar(500)
+  password       String           @db.VarChar(255)
+  mobileno       String           @db.VarChar(50)
+  profileimage   String?          @db.VarChar(500)
+  created        DateTime         @default(now()) @db.Timestamp(6)
+  modified       DateTime         @default(now()) @db.Timestamp(6)
+  expenses       expenses[]
+  incomes        incomes[]
+  sub_categories sub_categories[]
+}
