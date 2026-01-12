@@ -126,7 +126,7 @@ export default function PredictionForm({ onResult }: { onResult: (result: any, f
                 options={[
                   { label: "Normal", value: "1" },
                   { label: "Above Normal", value: "2" },
-                  { label: "Well Above Normal", value: "3" }
+                  { label: "High", value: "3" }
                 ]} 
               />
               
@@ -137,7 +137,7 @@ export default function PredictionForm({ onResult }: { onResult: (result: any, f
                 options={[
                   { label: "Normal", value: "1" },
                   { label: "Above Normal", value: "2" },
-                  { label: "Well Above Normal", value: "3" }
+                  { label: "High", value: "3" }
                 ]} 
               />
             </div>
