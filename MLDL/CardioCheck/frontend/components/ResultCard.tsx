@@ -15,8 +15,63 @@ interface ResultCardProps {
 }
 
 export default function ResultCard({ result, inputData, onReset }: ResultCardProps) {
-  const isRisk = result.prediction === 1;
   const riskPercentage = result.probability_disease * 100;
+
+  // Determine Risk Level
+  let riskLevel = "low";
+  let colorScheme = "primary"; // Default green/primary
+  let statusText = "Low Risk Profile";
+  let headline = "Health Metrics Within Range";
+  let description = "Your clinical parameters align with a healthy cardiovascular profile. Continue maintaining your active lifestyle and regular check-ups.";
+  let Icon = CheckCircle;
+  let gradientColor = "from-primary/20";
+  
+  if (riskPercentage > 55) {
+    riskLevel = "high";
+    colorScheme = "destructive";
+    statusText = "High Risk Detected";
+    headline = "Medical Attention Recommended";
+    description = "Our analysis indicates varying levels of potential cardiovascular risk based on your inputs. We strongly recommend consulting a cardiologist for a comprehensive evaluation.";
+    Icon = AlertTriangle;
+    gradientColor = "from-destructive/20";
+  } else if (riskPercentage >= 46) {
+    riskLevel = "moderate";
+    colorScheme = "yellow-500";
+    statusText = "Moderate Risk Profile";
+    headline = "Caution Recommended";
+    description = "Your results suggest a moderate risk. It is advisable to monitor your health closely and consult with a healthcare provider for preventive measures.";
+    Icon = AlertTriangle;
+    gradientColor = "from-yellow-500/20";
+  }
+
+  // Helper for dynamic classes since we can't fully interpolate tailwind classes sometimes inside complex strings
+  const getThemeClasses = () => {
+    switch (riskLevel) {
+      case "high":
+        return {
+          card: "border-destructive/50 bg-destructive/5",
+          text: "text-destructive",
+          bgBadge: "bg-destructive/10 border-destructive/20 text-destructive",
+          icon: "text-destructive"
+        };
+      case "moderate":
+        return {
+          card: "border-yellow-500/50 bg-yellow-500/5",
+          text: "text-yellow-500",
+          bgBadge: "bg-yellow-500/10 border-yellow-500/20 text-yellow-500",
+          icon: "text-yellow-500"
+        };
+      default:
+        return {
+          card: "border-primary/50 bg-primary/5",
+          text: "text-primary",
+          bgBadge: "bg-primary/10 border-primary/20 text-primary",
+          icon: "text-primary"
+        };
+    }
+  };
+
+  const theme = getThemeClasses();
   
   // Calculate stroke dasharray for the circular progress (circumference ~ 283)
   const circumference = 283;
@@ -30,9 +85,9 @@ export default function ResultCard({ result, inputData, onReset }: ResultCardPro
       className="max-w-4xl mx-auto space-y-8"
     >
       {/* Main Result Card */}
-      <div className={`relative overflow-hidden rounded-3xl p-8 border ${isRisk ? 'border-destructive/50 bg-destructive/5' : 'border-primary/50 bg-primary/5'} backdrop-blur-sm shadow-2xl`}>
+      <div className={`relative overflow-hidden rounded-3xl p-8 border ${theme.card} backdrop-blur-sm shadow-2xl`}>
         {/* Glow Effects */}
-        <div className={`absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br ${isRisk ? 'from-destructive/20' : 'from-primary/20'} to-transparent rounded-full blur-[80px] -z-10`} />
+        <div className={`absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br ${gradientColor} to-transparent rounded-full blur-[80px] -z-10`} />
         
         <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:pl-8">
             
@@ -53,7 +108,7 @@ export default function ResultCard({ result, inputData, onReset }: ResultCardPro
                         />
                         {/* Progress Circle */}
                         <motion.circle
-                            className={isRisk ? "text-destructive" : "text-primary"}
+                            className={theme.text}
                             strokeWidth="8"
                             stroke="currentColor"
                             fill="transparent"
@@ -69,12 +124,8 @@ export default function ResultCard({ result, inputData, onReset }: ResultCardPro
                     
                     {/* Center Icon/Text */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                         {isRisk ? (
-                             <AlertTriangle className="h-10 w-10 text-destructive mb-1" />
-                         ) : (
-                             <CheckCircle className="h-10 w-10 text-primary mb-1" />
-                         )}
-                         <span className={`text-3xl font-bold ${isRisk ? 'text-destructive' : 'text-primary'}`}>
+                         <Icon className={`h-10 w-10 mb-1 ${theme.icon}`} />
+                         <span className={`text-3xl font-bold ${theme.text}`}>
                              {riskPercentage.toFixed(0)}%
                          </span>
                          <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Risk Score</span>
@@ -84,18 +135,16 @@ export default function ResultCard({ result, inputData, onReset }: ResultCardPro
 
             {/* Text Content (Right) */}
             <div className="text-center md:text-left space-y-4 flex-1">
-                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border ${isRisk ? 'bg-destructive/10 border-destructive/20 text-destructive' : 'bg-primary/10 border-primary/20 text-primary'} text-sm font-bold uppercase tracking-wide`}>
-                    {isRisk ? "High Risk Detected" : "Low Risk Profile"}
+                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border ${theme.bgBadge} text-sm font-bold uppercase tracking-wide`}>
+                    {statusText}
                 </div>
                 
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                    {isRisk ? "Medical Attention Recommended" : "Health Metrics Within Range"}
+                    {headline}
                 </h2>
                 
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                   {isRisk 
-                    ? "Our analysis indicates varying levels of potential cardiovascular risk based on your inputs. We strongly recommend consulting a cardiologist for a comprehensive evaluation."
-                    : "Your clinical parameters align with a healthy cardiovascular profile. Continue maintaining your active lifestyle and regular check-ups."}
+                   {description}
                 </p>
                 
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
