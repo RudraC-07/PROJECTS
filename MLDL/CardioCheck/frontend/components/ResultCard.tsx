@@ -16,11 +16,11 @@ interface ResultCardProps {
 
 export default function ResultCard({ result, inputData, onReset }: ResultCardProps) {
   const isRisk = result.prediction === 1;
-  const confidence = (isRisk ? result.probability_disease : result.probability_no_disease) * 100;
+  const riskPercentage = result.probability_disease * 100;
   
   // Calculate stroke dasharray for the circular progress (circumference ~ 283)
   const circumference = 283;
-  const strokeDashoffset = circumference - (confidence / 100) * circumference;
+  const strokeDashoffset = circumference - (riskPercentage / 100) * circumference;
 
   return (
     <motion.div 
@@ -75,9 +75,9 @@ export default function ResultCard({ result, inputData, onReset }: ResultCardPro
                              <CheckCircle className="h-10 w-10 text-primary mb-1" />
                          )}
                          <span className={`text-3xl font-bold ${isRisk ? 'text-destructive' : 'text-primary'}`}>
-                             {confidence.toFixed(0)}%
+                             {riskPercentage.toFixed(0)}%
                          </span>
-                         <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Confidence</span>
+                         <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Risk Score</span>
                     </div>
                 </div>
             </div>
