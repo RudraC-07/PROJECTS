@@ -1,9 +1,12 @@
-import Image from "next/image";
+import Link from 'next/link'
+import React from 'react'
 
-export default function Home() {
+function page() {
   return (
     <>
-      <div>Hello World</div>
+      <Link href={"/login"}>Login</Link>    
     </>
-  );
+  )
 }
+
+export default page
