@@ -2,14 +2,16 @@
 
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, LogOut, Briefcase, LayoutDashboard, TrendingDown, TrendingUp, Users, Settings, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function Sidebar({ role = 'normal' }: any) {
   
+  const router = useRouter();
   // Role is now passed via props
   const userRole = role; 
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch
@@ -17,22 +19,37 @@ export function Sidebar({ role = 'normal' }: any) {
     setMounted(true);
   }, []);
 
-  // Common links for everyone
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' });
+      if (res.ok) {
+        router.push('/login');
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  // Common links for everyone - now role-aware
+  const dashboardHref = userRole === 'admin' ? '/admin/dashboard' : '/user/dashboard';
+  
   const commonLinks = [
-    { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Expenses', href: '/expenses' },
-    { name: 'Incomes', href: '/incomes' },
+    { name: 'Dashboard', href: dashboardHref, icon: LayoutDashboard },
+    { name: 'Projects', href: userRole === 'admin' ? '/admin/projects' : '/user/projects', icon: Briefcase },
+    { name: 'Expenses', href: userRole === 'admin' ? '/admin/expenses' : '/user/expenses', icon: TrendingDown },
+    { name: 'Incomes', href: userRole === 'admin' ? '/admin/incomes' : '/user/incomes', icon: TrendingUp },
   ];
 
   // Admin only links
   const adminLinks = [
-    { name: 'Manage Users', href: '/users' },
-    { name: 'System Settings', href: '/settings' },
+    { name: 'Manage Users', href: '/admin/users', icon: Users },
+    { name: 'System Settings', href: '/admin/settings', icon: Settings },
   ];
 
   // Normal user links (if specific ones exist)
   const normalLinks = [
-    { name: 'My Profile', href: '/profile' },
+    { name: 'My Profile', href: '/profile', icon: User },
   ];
 
   let linksToShow = commonLinks;
@@ -44,54 +61,70 @@ export function Sidebar({ role = 'normal' }: any) {
   }
 
   return (
-    <aside className="w-64 bg-sidebar border-r border-sidebar-border min-h-screen hidden md:flex flex-col text-sidebar-foreground">
+    <aside className="w-68 bg-background border-r border-border min-h-screen hidden md:flex flex-col text-foreground shadow-2xl z-20">
       
       {/* Sidebar Header */}
-      <div className="flex-shrink-0 flex items-center justify-center h-16 border-b border-sidebar-border">
-        <span className="text-xl font-bold text-sidebar-primary">ExpenseManager</span>
+      <div className="flex-shrink-0 flex items-center px-6 h-16 border-b border-border bg-primary/5">
+        <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center mr-3 shadow-lg shadow-primary/20 glow-primary">
+           <Briefcase className="h-5 w-5 text-background" />
+        </div>
+        <span className="text-xl font-bold tracking-tighter text-foreground">Expen<span className="text-primary font-extrabold">Track</span></span>
       </div>
       
-      {/* User Info Mock */}
-      <div className="px-4 py-4 border-b border-sidebar-border bg-sidebar-accent/10">
-        <p className="text-sm font-medium text-sidebar-foreground">Current User</p>
-        <p className="text-xs text-muted-foreground capitalize">{userRole}</p>
+      {/* User Info Section */}
+      <div className="px-6 py-5 bg-gradient-to-b from-primary/5 to-transparent">
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center border border-border shadow-inner">
+            <User className="h-4.5 w-4.5 text-primary" />
+          </div>
+          <div className="overflow-hidden">
+            <p className="text-[12px] font-bold truncate text-foreground tracking-tight">Project Lead</p>
+            <p className="text-[8.5px] text-primary font-bold uppercase tracking-[0.2em] opacity-70">{userRole} ACCESS</p>
+          </div>
+        </div>
       </div>
 
       {/* Navigation List */}
-      <nav className="flex-1 px-4 py-6 space-y-1">
-        {linksToShow.map((link) => (
-          <Link
-            key={link.name}
-            href={link.href}
-            className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
-          >
-            {/* Simple square for icon */}
-            <span className="mr-3 h-5 w-5 bg-sidebar-accent rounded-sm" /> 
-            {link.name}
-          </Link>
-        ))}
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto pt-2">
+        <p className="px-4 text-[8.5px] font-bold text-muted-foreground uppercase tracking-[0.25em] mb-2 ml-1">Workspace</p>
+        {linksToShow.map((link: any) => {
+          const Icon = link.icon;
+          return (
+            <Link
+              key={link.name}
+              href={link.href}
+              className="group flex items-center px-4 py-2.5 text-[12px] font-semibold rounded-xl text-foreground/70 hover:bg-primary/10 hover:text-primary transition-all duration-300 border border-transparent hover:border-primary/10"
+            >
+              <Icon className="mr-3 h-4.5 w-4.5 text-muted-foreground group-hover:text-primary transition-colors" />
+              {link.name}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Footer Actions */}
-      <div className="p-4 border-t border-sidebar-border space-y-2">
+      <div className="p-4 border-t border-border bg-primary/5 space-y-2">
         {mounted && (
           <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="group flex w-full items-center px-2 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+            className="group flex w-full items-center px-4 py-2.5 text-[11px] font-bold rounded-xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all duration-300 border border-transparent hover:border-primary/10"
           >
-            {theme === 'dark' ? (
-              <Sun className="mr-3 h-5 w-5" />
+            {resolvedTheme === 'dark' ? (
+              <Sun className="mr-3 h-4 w-4 text-primary" />
             ) : (
-              <Moon className="mr-3 h-5 w-5" />
+              <Moon className="mr-3 h-4 w-4 text-primary" />
             )}
-            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            {resolvedTheme === 'dark' ? 'LIGHT MODE' : 'DARK MODE'}
           </button>
         )}
 
-        <Link href="/logout" className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-destructive hover:bg-destructive/10 hover:text-destructive">
-          <span className="mr-3 h-5 w-5 bg-destructive/20 rounded-sm" />
-          Logout
-        </Link>
+        <button 
+          onClick={handleLogout}
+          className="group flex w-full items-center px-4 py-2.5 text-[11px] font-black rounded-xl text-foreground/60 hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-300"
+        >
+          <LogOut className="mr-3 h-4 w-4" />
+          LOGOUT
+        </button>
       </div>
 
     </aside>

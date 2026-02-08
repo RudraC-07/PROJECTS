@@ -13,7 +13,7 @@ export function Navbar() {
               E
             </div>
             <Link href="/" className="text-xl font-bold tracking-tight text-foreground">
-              Expense<span className="text-primary/70">Manager</span>
+              Expen<span className="text-primary/70">Track</span>
             </Link>
           </div>
 

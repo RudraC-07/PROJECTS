@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
+import { Briefcase } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,115 +28,119 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.username, // Sending username as email/identifier
+          password: formData.password,
+          // userType: 'user' // Optional: let the server auto-detect
+        }),
+      });
 
-    if (formData.username === 'admin' && formData.password === 'admin@123') {
-      router.push('/admin/dashboard');
-      return;
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Redirect
+      router.push(data.redirectUrl || '/user/dashboard');
+      router.refresh(); // Refresh to update server components with new cookie
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    if (formData.username === 'user' && formData.password === 'user@123') {
-      router.push('/user/dashboard');
-      return;
-    }
-
-    setError('Invalid credentials. Use admin/admin@123 or user/user@123');
-    setLoading(false);
   };
 
   return (
-    <>
-      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-6 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-foreground">Sign in to your account</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Or{' '}
-          <Link href="/register" className="font-medium text-primary hover:text-primary/80">
-             create a new account
-          </Link>
+    <div className="min-h-screen aurora-bg flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md mb-6 text-center animate-in fade-in slide-in-from-top-4 duration-1000">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-2xl shadow-primary/40 mb-3 glow-primary">
+           <Briefcase className="h-6 w-6 text-background" />
+        </div>
+        <h2 className="text-3xl font-bold tracking-tighter text-foreground">Expen<span className="text-primary font-extrabold">Track</span></h2>
+        <p className="mt-2 text-[10px] text-primary font-bold tracking-[0.2em] uppercase opacity-70">
+          Project Finance
         </p>
       </div>
 
-      <Card>
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          
+      <div className="sm:mx-auto sm:w-full sm:max-w-md animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-100 px-4">
+        <Card className="border border-border/50 shadow-2xl p-8 bg-card backdrop-blur-xl rounded-[1.5rem]">
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            
+            <Input 
+              label="Username or Email" 
+              id="username" 
+              name="username" 
+              type="text" 
+              autoComplete="username" 
+              required 
+              placeholder="Enter your username"
+              value={formData.username}
+              onChange={handleChange}
+              className="border-border h-10 rounded-lg px-4"
+            />
 
-          <Input 
-            label="Username" 
-            id="username" 
-            name="username" 
-            type="text" 
-            autoComplete="username" 
-            required 
-            placeholder="Enter your username"
-            value={formData.username}
-            onChange={handleChange}
-          />
+            <Input 
+              label="Password" 
+              id="password" 
+              name="password" 
+              type="password" 
+              autoComplete="current-password" 
+              required 
+              placeholder="Enter password"
+              value={formData.password}
+              onChange={handleChange}
+              className="border-border h-10 rounded-lg px-4"
+            />
 
-          <Input 
-            label="Password" 
-            id="password" 
-            name="password" 
-            type="password" 
-            autoComplete="current-password" 
-            required 
-            value={formData.password}
-            onChange={handleChange}
-          />
+            {error && (
+              <div className="text-rose-400 text-[10px] font-bold bg-rose-500/10 p-3 rounded-lg border border-rose-500/20 animate-shake">
+                {error}
+              </div>
+            )}
 
-          {error && (
-            <div className="text-destructive text-sm bg-destructive/10 p-2 rounded">
-              {error}
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-3.5 w-3.5 rounded border-border bg-secondary text-primary focus:ring-primary cursor-pointer"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-[9px] text-muted-foreground font-bold uppercase tracking-wider cursor-pointer">
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-[9px]">
+                <Link href="#" className="font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider">
+                  Reset
+                </Link>
+              </div>
             </div>
-          )}
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 rounded border-input text-primary focus:ring-ring"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-foreground">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a href="#" className="font-medium text-primary hover:text-primary/80">
-                Forgot your password?
-              </a>
-            </div>
-          </div>
-
-          <div>
-            <Button type="submit" fullWidth disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign in'}
+            <Button type="submit" fullWidth disabled={loading} size="md" className="h-11 text-[12px] shadow-xl shadow-primary/20 glow-primary bg-primary text-background hover:bg-primary/90 font-bold">
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
-          </div>
-        </form>
+          </form>
 
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-            </div>
+          <div className="mt-8 text-center">
+            <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-[0.25em]">
+              New to ExpenTrack?{' '}
+              <Link href="/register" className="font-extrabold text-primary hover:underline transition-colors ml-1">
+                Register
+              </Link>
+            </p>
           </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <Button variant="secondary" fullWidth>
-               Google
-            </Button>
-            <Button variant="secondary" fullWidth>
-               GitHub
-            </Button>
-          </div>
-        </div>
-      </Card>
-    </>
+        </Card>
+      </div>
+    </div>
   );
 }
