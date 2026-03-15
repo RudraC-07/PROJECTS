@@ -10,7 +10,7 @@ datasource db {
 model peoples {
   peopleid    Int      @id @default(autoincrement())
   peoplecode  String?  @db.VarChar(50)
-  password    String   @db.VarChar(50)
+  password    String   @db.VarChar(255)
   peoplename  String   @db.VarChar(250)
   email       String   @db.VarChar(150)
   mobileno    String   @db.VarChar(50)
