@@ -1,31 +1,22 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { cookies } from 'next/headers';
-
+import { getUserSession } from '@/lib/auth';
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token');
-
-    if (!token) {
+    const auth = await getUserSession();
+    if (!auth) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-
-    const auth = JSON.parse(token.value);
     const body = await request.json();
     const { amount, categoryId, subCategoryId, projectId, date, detail, description, peopleId } = body;
-
     if (!amount || !date) {
       return NextResponse.json(
         { message: 'Amount and Date are required' },
         { status: 400 }
       );
     }
-
-    // Determine IDs based on role
     let finalUserId: number;
     let finalPeopleId: number;
-
     if (auth.role === 'admin') {
       finalUserId = auth.id;
       finalPeopleId = peopleId ? parseInt(peopleId) : 0;
@@ -35,7 +26,6 @@ export async function POST(request: Request) {
       finalUserId = person.userid;
       finalPeopleId = auth.id;
     }
-
     const newIncome = await prisma.incomes.create({
       data: {
         amount: parseFloat(amount),
@@ -51,12 +41,10 @@ export async function POST(request: Request) {
         modified: new Date(),
       },
     });
-
     return NextResponse.json({
       message: 'Income added successfully',
       income: newIncome,
     });
-
   } catch (error) {
     console.error('Add income error:', error);
     return NextResponse.json(
@@ -65,28 +53,21 @@ export async function POST(request: Request) {
     );
   }
 }
-
 export async function GET(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token');
-    if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-
-    const auth = JSON.parse(token.value);
+    const auth = await getUserSession();
+    if (!auth) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get('projectId');
-
     let where: any = {};
     if (auth.role === 'admin') {
       where.userid = auth.id;
     } else {
       where.peopleid = auth.id;
     }
-
     if (projectId) {
       where.projectid = parseInt(projectId);
     }
-
     const incomes = await prisma.incomes.findMany({
       where,
       include: {
@@ -95,9 +76,43 @@ export async function GET(request: Request) {
       },
       orderBy: { incomedate: 'desc' }
     });
-
     return NextResponse.json(incomes);
   } catch (error) {
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+  }
+}
+export async function DELETE(request: Request) {
+  try {
+    const auth = await getUserSession();
+    if (!auth) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    if (!id) {
+      return NextResponse.json({ message: 'Income ID is required' }, { status: 400 });
+    }
+    const income = await prisma.incomes.findUnique({
+      where: { incomeid: parseInt(id) }
+    });
+    if (!income) {
+      return NextResponse.json({ message: 'Income not found' }, { status: 404 });
+    }
+    if (auth.role === 'admin') {
+      if (income.userid !== auth.id) {
+        return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+      }
+    } else {
+      if (income.peopleid !== auth.id) {
+        return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+      }
+    }
+    await prisma.incomes.delete({
+      where: { incomeid: parseInt(id) }
+    });
+    return NextResponse.json({ message: 'Income deleted successfully' });
+  } catch (error) {
+    console.error('Delete income error:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }

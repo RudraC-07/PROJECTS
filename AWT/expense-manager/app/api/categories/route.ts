@@ -1,29 +1,21 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { cookies } from 'next/headers';
-
+import { getUserSession } from '@/lib/auth';
 export async function GET(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token');
-
-    if (!token) {
+    const auth = await getUserSession();
+    if (!auth) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-
-    const auth = JSON.parse(token.value);
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get('type') || 'expense'; // 'expense' or 'income'
-    
+    const type = searchParams.get('type') || 'expense'; 
     const userId = auth.role === 'admin' ? auth.id : await (async () => {
       const p = await prisma.peoples.findUnique({ where: { peopleid: auth.id } });
       return p?.userid;
     })();
-
     if (!userId) {
       return NextResponse.json({ message: 'User context not found' }, { status: 404 });
     }
-
     const categories = await prisma.categories.findMany({
       where: { 
         userid: userId,
@@ -39,12 +31,9 @@ export async function GET(request: Request) {
       },
       orderBy: { categoryname: 'asc' }
     });
-
-    // Auto-seed Categories AND Subcategories if none exist
     const totalCount = await prisma.categories.count({ where: { userid: userId } });
     if (totalCount === 0) {
       const seedData = [
-        // Expenses
         { 
           name: 'Equipment & Hardware', 
           isexpense: true,
@@ -70,7 +59,6 @@ export async function GET(request: Request) {
           isexpense: true,
           subs: ['Airfare', 'Hotel Stays', 'Meals & Incidentals', 'Local Transport'] 
         },
-        // Incomes
         {
           name: 'Project Funding',
           isexpense: false,
@@ -82,7 +70,6 @@ export async function GET(request: Request) {
           subs: ['Service Fees', 'Milestone Payment', 'Retainer']
         }
       ];
-
       for (const item of seedData) {
         const newCat = await prisma.categories.create({
           data: {
@@ -95,7 +82,6 @@ export async function GET(request: Request) {
             modified: new Date(),
           }
         });
-
         await Promise.all(
           item.subs.map(subName => 
             prisma.sub_categories.create({
@@ -113,8 +99,6 @@ export async function GET(request: Request) {
           )
         );
       }
-
-      // Re-fetch filtered
       return NextResponse.json(await prisma.categories.findMany({
         where: { 
           userid: userId, 
@@ -125,7 +109,6 @@ export async function GET(request: Request) {
         orderBy: { categoryname: 'asc' }
       }));
     }
-
     return NextResponse.json(categories);
   } catch (error) {
     console.error('Fetch categories error:', error);
